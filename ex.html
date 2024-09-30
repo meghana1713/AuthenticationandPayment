@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="">
+      <div>
+        <input type="text" placeholder="name" id="name" />
+
+        <div>
+          <label>Email</label>
+          <input
+            type="text"
+            name="Email"
+            id="email"
+            placeholder="Enter your email"
+          />
+        </div>
+
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            autocomplete="on"
+          />
+        </div>
+
+        <button type="button" id="register" name="register">Register</button>
+      </div>
+    </form>
+
+    <a href="./Singin.html">Signin</a>
+  </body>
+</html>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+  // https://firebase.google.com/docs/web/setup#available-libraries
+  import {
+    getDatabase,
+    ref,
+    set,
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwVgqOGnK94_mozu3YEWEXwpbGMcURZZI",
+    authDomain: "web-authentication-2e225.firebaseapp.com",
+    projectId: "web-authentication-2e225",
+    storageBucket: "web-authentication-2e225.appspot.com",
+    messagingSenderId: "318064869044",
+    appId: "1:318064869044:web:fe114d6ea60d63ff9ae1e1",
+  };
+
+  // new registration code start ..............
+
+  // for database methods
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+console.log("app",app);
+  document.getElementById("register").addEventListener("click", function () {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let userName = document.getElementById("name").value;
+
+    const auth = getAuth(app);
+    console.log("auth",auth);
+    createUserWithEmailAndPassword(auth, email, password)
+    // //it returns an object  i.e userCredential which contains  as user property, which holds information about the authenticated user, such as their unique identifier (UID), email, and other properties and meta data.
+    // db refers to the instance of the Firebase Realtime Database service that you interact with to perform operations on your database. This instance is obtained by calling the getDatabase()
+    // ref function to create a reference to a specific location i.e here users in your database.
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;//in user firbase will create a unique id for evey authenticated user
+
+        const db = getDatabase();
+        set(ref(db, "users/" + user.uid), {
+          password: password,
+          email: email,
+          name: userName,
+        });
+        alert("registered successfully in database");
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  });
+</script>
+

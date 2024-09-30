@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+    
+            <label>Email</label>
+            <input
+              type="text"
+              name="login_email"
+              id="login_email"
+              placeholder="Enter your email"
+            />
+          </div>
+  
+          <div>
+            <label>Password</label>
+            <input
+              type="password"
+              name="login_password"
+              id="login_password"
+              autocomplete="on"
+            />
+          </div>
+  
+          <button type="button" id="login" name="login">Sign in</button>
+        </div>
+      </form>
+</body>
+</html>
+<script type="module">
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import {
+    getAuth,signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+  // https://firebase.google.com/docs/web/setup#available-libraries
+  import {
+    getDatabase,
+    ref,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3VyGNFgP_bhLwyQQ2B3g7WjC0Ctk4cLI",
+  authDomain: "webauthentication-5f6fd.firebaseapp.com",
+  databaseURL: "https://webauthentication-5f6fd-default-rtdb.firebaseio.com",
+  projectId: "webauthentication-5f6fd",
+  storageBucket: "webauthentication-5f6fd.appspot.com",
+  messagingSenderId: "59807012909",
+  appId: "1:59807012909:web:fcb68661622ab02786c0a4"
+  };
+
+  // new registration code start ..............
+
+  // for database methods
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  document.getElementById("login").addEventListener("click", function () {
+    let email = document.getElementById("login_email").value;
+    let password = document.getElementById("login_password").value;
+
+ 
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+     const db = getDatabase();
+     const user_ref = ref(db, 'users/' + user.uid );
+onValue(user_ref, (snapshot) => {
+  const data = snapshot.val();
+  console.log("data",data);
+});
+console.log("user",user);
+alert("login Succesfuly");
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+});
+
+</script>
